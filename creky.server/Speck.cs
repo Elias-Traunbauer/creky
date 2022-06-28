@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace creky.server
 {
-    internal class Speck
+    public class Speck
     {
         public uint[] Encrypt(string input, long key)
         {
