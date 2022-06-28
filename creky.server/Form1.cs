@@ -1,7 +1,4 @@
-﻿using Cudafy;
-using Cudafy.Host;
-using Cudafy.Translator;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -11,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace creky.server
 {
@@ -35,7 +33,6 @@ namespace creky.server
 
         private void btnDecrypt_Click(object sender, EventArgs e)
         {
-            BruteRangeSet set = new BruteRangeSet(0, 0, new byte[0]);
             Speck speck = new Speck();
             var inputBytes = new List<byte>();
             var text = tbBytesInDe.Text;
@@ -43,7 +40,7 @@ namespace creky.server
             {
                 inputBytes.Add(byte.Parse(item));
             }
-            var res = set.decrypt(inputBytes.ToArray(), uint.Parse(tbKeyInDe.Text));
+            var res = speck.trykey(inputBytes.ToArray(), uint.Parse(tbKeyInDe.Text));
             string reSSSSS = "";
             for (int i = 0; i < res.Length; i++)
             {
@@ -54,28 +51,86 @@ namespace creky.server
 
         private void btnBruteForce_Click(object sender, EventArgs e)
         {
+            Speck speck = new Speck();
             var inputBytes = new List<byte>();
             var text = tbBytesIn.Text;
             foreach (var item in text.Split(' '))
             {
                 inputBytes.Add(byte.Parse(item));
             }
+            int[] bytesAsInts = Array.ConvertAll(inputBytes.ToArray(), c => (int)c);
+            BruteRangeSet set = new BruteRangeSet(18000000, 10, bytesAsInts);
+            //List<char[]> ress = new List<char[]>();
+            //int time = Environment.TickCount;
+            //for (long i = 18000000 * 100; i < 18000000 * 100+ 1000000; i++)
+            //{
+            //    char[] res = speck.trykey(inputBytes.ToArray(), i);
+            //    ress.Add(res);
 
-            BruteRangeSet set = new BruteRangeSet(1000000000000000, 10000000, inputBytes.ToArray());
+            //    int m = 0;
+            //    string txt = "";
+            //    for (int g = 0; g < res.Length; g++)
+            //    {
+            //        txt += res[g];
+            //        if (res[g] >= 97 && res[g] <= 122)
+            //        {
+            //            m++;
+            //        }
+            //        else if (res[g] == 32)
+            //        {
+            //            m += 3;
+            //        }
 
-            List<string> results = new List<string>();
+            //    }
 
-            for (int i = 0; i < set.outputBytes.Length; i+= set.width)
-            {
-                string res = "";
+            //    if (m > res.Length)
+            //    {
+            //        MessageBox.Show("Found: " + txt);
+            //    }
+            //}
+            //int dir = Environment.TickCount - time;
+            //MessageBox.Show(dir / 1000 + "s");
+            //foreach (var item in ress)
+            //{
+            //    int m = 0;
+            //    string txt = "";
+            //    for (int i = 0; i < item.Length; i++)
+            //    {
+            //        txt += item[i];
+            //        if (item[i] >= 97 && item[i] <= 122)
+            //        {
+            //            m++;
+            //        }
+            //        else if (item[i] == 32)
+            //        {
+            //            m += 3;
+            //        }
 
-                for (int j = i; j < set.width; j++)
-                {
-                    res += set.outputBytes[i + j];
-                }
-                results.Add(res);
-            }
-            MessageBox.Show("Finished");
+            //    }
+                
+            //    if (m > item.Length)
+            //    {
+            //        MessageBox.Show("Found: " + txt);
+            //    }
+            //}
+
+            //List<string> results = new List<string>();
+
+            //for (int i = 0; i < set.outputBytes.Length; i+= set.width)
+            //{
+            //    string res = "";
+
+            //    for (int j = i; j < set.width; j++)
+            //    {
+            //        res += set.outputBytes[i + j];
+            //    }
+            //    results.Add(res);
+            //}
+        }
+
+        private void creky_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

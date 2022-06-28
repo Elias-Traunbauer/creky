@@ -1,5 +1,4 @@
-﻿using Cudafy;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,11 +9,9 @@ namespace creky.server
 {
     internal class Speck
     {
-        List<uint> publicKey = new List<uint>();
-
         public uint[] Encrypt(string input, long key)
         {
-            PrepareKey(key);
+            uint[] keyP = PrepareKey(key);
 
             if (input.Length % 8 != 0)
             {
@@ -27,7 +24,8 @@ namespace creky.server
                 input = input + add;
             }
 
-            List<uint> output = new List<uint>();
+            uint[] res = new uint[input.Length];
+            int outputId = 0;
 
             uint x = 0U;
             uint y = 0U;
@@ -37,24 +35,25 @@ namespace creky.server
                 for (int i = k * 8; i < k * 8 + 8; i++)
                 {
                     x = y << 24 | x >> 8;
-                    y = (uint)((uint)(byte)input[i] << 24 | y >> 8);
+                    y = (uint)(byte)input[i] << 24 | y >> 8;
                 }
-                sp_block(ref x, ref y);
+                sp_block(ref x, ref y, keyP);
                 for (int i = 0; i < 8; i++)
                 {
                     long d = 0x100;
-                    output.Add((uint)(x % d));
+                    res[outputId] = (uint)(x % d);
+                    outputId++;
                     x = y << 24 ^ x >> 8;
                     y = y >> 8;
                 }
             }
 
-            return output.ToArray();
+            return res;
         }
 
         public int[] Decrypt(byte[] input, long key)
         {
-            PrepareKey(key);
+            uint[] keyP = PrepareKey(key);
 
             List<int> ints = new List<int>();
 
@@ -68,7 +67,7 @@ namespace creky.server
                     x = y << 24 | x >> 8;
                     y = (uint)input[i] << 24 | y >> 8;
                 }
-                sp_blockrev(ref x, ref y);
+                sp_blockrev(ref x, ref y, keyP);
                 for (int i = 0; i < 8; i++)
                 {
                     ints.Add((int)(x % 0x100));
@@ -80,35 +79,36 @@ namespace creky.server
             return ints.ToArray();
         }
 
-        private void PrepareKey(long key)
+        private uint[] PrepareKey(long key)
         {
-            publicKey.Clear();
+            uint[] keyRes = new uint[23];
             uint a = (uint)(key / 0x100000000);
             uint b = (uint)(key % 0x100000000);
-            publicKey.Add(b);
+            keyRes[0] = b;
             for (uint i = 0; i < 22; i++)
             {
                 rot(i, ref a, ref b);
-                publicKey.Add(b);
+                keyRes[i + 1] = b;
             }
+            return keyRes;
         }
 
-        private void sp_block (ref uint x, ref uint y)
+        private void sp_block (ref uint x, ref uint y, uint[] key)
         {
-            rot(publicKey[0], ref x, ref y);
+            rot(key[0], ref x, ref y);
             for (int i = 1; i < 23; i++)
             {
-                rot(publicKey[i], ref x, ref y);
+                rot(key[i], ref x, ref y);
             }
         }
 
-        private void sp_blockrev(ref uint x, ref uint y)
+        private void sp_blockrev(ref uint x, ref uint y, uint[] key)
         {
             for (int i = 22; i >= 1; i--)
             {
-                rotrev(publicKey[i], ref x, ref y);
+                rotrev(key[i], ref x, ref y);
             }
-            rotrev(publicKey[0], ref x, ref y);
+            rotrev(key[0], ref x, ref y);
         }
 
         private void rot(uint i, ref uint x, ref uint y)
@@ -127,6 +127,43 @@ namespace creky.server
             x = x ^ i;
             x = (uint)((x - y) % 0x100000000);
             x = x >> 3 | x << 29;
+        }
+
+        public char[] trykey(byte[] msg, long key)
+        {
+            uint[] keyP = PrepareKey(key);
+
+            char[] res = new char[msg.Length * 10];
+
+            int resId = 0;
+
+            uint x = 0U;
+            uint y = 0U;
+
+            for (int k = 0; k < msg.Length / 8; k++)
+            {
+                for (int i = k * 8; i < k * 8 + 8; i++)
+                {
+                    x = y << 24 | x >> 8;
+                    y = (uint)msg[i] << 24 | y >> 8;
+                }
+                sp_blockrev(ref x, ref y, keyP);
+                for (int i = 0; i < 8; i++)
+                {
+                    res[resId] = (char)(x % 0x100);
+                    resId++;
+                    x = y << 24 ^ x >> 8;
+                    y = y >> 8;
+                }
+            }
+
+            char[] realRes = new char[resId];
+            for (int i = 0; i < resId; i++)
+            {
+                realRes[i] = res[i];
+            }
+
+            return realRes;
         }
 
     }
