@@ -100,6 +100,7 @@
             this.tbBytesIn.Name = "tbBytesIn";
             this.tbBytesIn.Size = new System.Drawing.Size(542, 20);
             this.tbBytesIn.TabIndex = 5;
+            this.tbBytesIn.TextChanged += new System.EventHandler(this.tbBytesIn_TextChanged);
             // 
             // tbMsgOut
             // 
