@@ -6,10 +6,20 @@ namespace creky.server
 {
     internal class Program
     {
-        static int chunkSize = int.MaxValue;
+        static int chunkSize = int.MaxValue - 1000;
 
         static void Main(string[] args)
         {
+            if (args.Length < 4)
+            {
+                Console.WriteLine("Usage");
+                Console.WriteLine("Argument 1: results directory path");
+                Console.WriteLine("Argument 2: input string file path");
+                Console.WriteLine("Argument 3: start index");
+                Console.WriteLine("Argument 4: end index");
+                Console.WriteLine("Argument 5 (optional): test? [true|false]");
+                return;
+            }
             // args 0 = resDirPath
             // args 1 = inputFile
             // args 2 = startIndex
@@ -26,7 +36,7 @@ namespace creky.server
             }
             long startIndex = long.Parse(args[2]);
             long endIndex = long.Parse(args[3]);
-            bool test = args[4] == "test";
+            bool test = args[4] == "true";
 
             long keyCount = endIndex - startIndex;
 
@@ -53,11 +63,12 @@ namespace creky.server
                 {
                     if (device.AcceleratorType == AcceleratorType.CPU)
                     {
-                        return;
+                        continue;
                     }
                     using var accelerator = device.CreateAccelerator(context);
-                    Console.WriteLine("Test for Device [" + device.Name + "] Multiprocessors: " + device.NumMultiprocessors);
+                    Console.WriteLine($"Test for Device {device.ToString()} Multiprocessors: " + device.NumMultiprocessors);
                     Console.WriteLine($"Testing {chunkSize} iterations");
+                    Console.WriteLine($"Input length: {input.Length}");
 
                     var inputref = accelerator.Allocate1D<byte>(input.Length);
                     var outputInfo = accelerator.Allocate1D<byte>(chunkSize);
@@ -70,15 +81,21 @@ namespace creky.server
 
                     int currentChunkSize = chunkSize;
 
-                    int startTime = Environment.TickCount;
+                    double startTime = Environment.TickCount;
 
                     kernel(currentChunkSize, (ArrayView<byte>)outputInfo, (ArrayView<byte>)inputref, chunkStart);
 
-                    int duration = Environment.TickCount - startTime;
-                    float seconds = duration / 1000f;
-                    
+                    outputInfo.GetAsArray1D();
 
-                    Console.WriteLine("");
+                    double duration = Environment.TickCount - startTime;
+                    Console.WriteLine($"Start time: {startTime} - End time: {Environment.TickCount}");
+                    double seconds = duration / 1000d;
+                    long multiplier = (long)(Math.Pow(2, 53) / currentChunkSize);
+                    double secondsTotal = seconds * multiplier;
+                    double hoursTotal = secondsTotal / 3600d;
+                    double daysTotal = hoursTotal / 24;
+                    Console.WriteLine($"{currentChunkSize} iterations took {seconds}s -> this has to be done {multiplier}x to try all keys");
+                    Console.WriteLine($"Results: Total estimated (worst case) time: " + (int)daysTotal + "d");
                 }
             }
             else
