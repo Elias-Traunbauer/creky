@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
 
 namespace creky.server
 {
@@ -86,101 +85,6 @@ namespace creky.server
                 //MessageBox.Show("None found");
             }
 
-
-            //int tt = Environment.TickCount;
-            //Parallel.For(18000000, 18000000 + 10000000, (long key) =>
-            //{
-            //    var res = speck.trykey(inputBytes.ToArray(), key);
-            //    int val = 0;
-            //    string msg = "";
-            //    for (int i = 0; i < res.Length; i++)
-            //    {
-            //        msg += res[i];
-            //        if (res[i] >= 97 && res[i] <= 122)
-            //        {
-            //            val++;
-            //        }
-            //        if (res[i] == 32)
-            //        {
-            //            val += 3;
-            //        }
-            //    }
-            //    if (val > res.Length)
-            //    {
-            //        MessageBox.Show(msg);
-            //    }
-            //});
-            //int td = Environment.TickCount - tt;
-            //MessageBox.Show("dur: " + td);
-
-
-
-            //List<char[]> ress = new List<char[]>();
-            //int time = Environment.TickCount;
-            //for (long i = 18000000 * 100; i < 18000000 * 100+ 1000000; i++)
-            //{
-            //    char[] res = speck.trykey(inputBytes.ToArray(), i);
-            //    ress.Add(res);
-
-            //    int m = 0;
-            //    string txt = "";
-            //    for (int g = 0; g < res.Length; g++)
-            //    {
-            //        txt += res[g];
-            //        if (res[g] >= 97 && res[g] <= 122)
-            //        {
-            //            m++;
-            //        }
-            //        else if (res[g] == 32)
-            //        {
-            //            m += 3;
-            //        }
-
-            //    }
-
-            //    if (m > res.Length)
-            //    {
-            //        MessageBox.Show("Found: " + txt);
-            //    }
-            //}
-            //int dir = Environment.TickCount - time;
-            //MessageBox.Show(dir / 1000 + "s");
-            //foreach (var item in ress)
-            //{
-            //    int m = 0;
-            //    string txt = "";
-            //    for (int i = 0; i < item.Length; i++)
-            //    {
-            //        txt += item[i];
-            //        if (item[i] >= 97 && item[i] <= 122)
-            //        {
-            //            m++;
-            //        }
-            //        else if (item[i] == 32)
-            //        {
-            //            m += 3;
-            //        }
-
-            //    }
-
-            //    if (m > item.Length)
-            //    {
-            //        MessageBox.Show("Found: " + txt);
-            //    }
-            //}
-
-            //List<string> results = new List<string>();
-
-            //for (int i = 0; i < set.outputBytes.Length; i+= set.width)
-            //{
-            //    string res = "";
-
-            //    for (int j = i; j < set.width; j++)
-            //    {
-            //        res += set.outputBytes[i + j];
-            //    }
-            //    results.Add(res);
-            //}
         }
 
         private void creky_Load(object sender, EventArgs e)
