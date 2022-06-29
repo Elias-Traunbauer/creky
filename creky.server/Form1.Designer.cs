@@ -43,6 +43,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.amount = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // tbInput
@@ -100,7 +101,6 @@
             this.tbBytesIn.Name = "tbBytesIn";
             this.tbBytesIn.Size = new System.Drawing.Size(542, 20);
             this.tbBytesIn.TabIndex = 5;
-            this.tbBytesIn.TextChanged += new System.EventHandler(this.tbBytesIn_TextChanged);
             // 
             // tbMsgOut
             // 
@@ -171,11 +171,19 @@
             this.label3.Text = "Encrypt";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // amount
+            // 
+            this.amount.Location = new System.Drawing.Point(77, 117);
+            this.amount.Name = "amount";
+            this.amount.Size = new System.Drawing.Size(165, 20);
+            this.amount.TabIndex = 16;
+            // 
             // creky
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(643, 348);
+            this.Controls.Add(this.amount);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -216,6 +224,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox amount;
     }
 }
 

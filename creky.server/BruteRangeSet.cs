@@ -10,7 +10,7 @@ using ILGPU.Runtime;
 
 namespace creky.server
 {
-    internal class BruteRangeSet
+    public class BruteRangeSet
     {
         public byte[] outputInfo;
         public int width;
@@ -26,30 +26,32 @@ namespace creky.server
             {
                 foreach (Device device in context.Devices)
                 {
-                    if (device.AcceleratorType == AcceleratorType.Cuda | device.AcceleratorType == AcceleratorType.OpenCL)
+                    if (device.Name == "NVIDIA GeForce GTX 1660 Ti" || device.Name == "TrauniGPU")        // pls insert trauni gpu
                     {
-                        var accelerator = device.CreateAccelerator(context);
+                        if (device.AcceleratorType == AcceleratorType.Cuda | device.AcceleratorType == AcceleratorType.OpenCL)
+                        {
+                            var accelerator = device.CreateAccelerator(context);
 
-                        var inputref = accelerator.Allocate1D<byte>(inputBytes.Length);
-                        var outputInfo = accelerator.Allocate1D<byte>(keyRange);
-                        inputref.CopyFromCPU(inputBytes);
-                        outputInfo.MemSetToZero();
+                            var inputref = accelerator.Allocate1D<byte>(inputBytes.Length);
+                            var outputInfo = accelerator.Allocate1D<byte>(keyRange);
+                            inputref.CopyFromCPU(inputBytes);
+                            outputInfo.MemSetToZero();
 
-                        var kernel = accelerator.LoadAutoGroupedStreamKernel<Index1D, ArrayView<byte>, ArrayView<byte>, long, int>(TryKeyKernel);
+                            var kernel = accelerator.LoadAutoGroupedStreamKernel<Index1D, ArrayView<byte>, ArrayView<byte>, long, int>(TryKeyKernel);
 
-                        kernel(keyRange, (ArrayView<byte>)outputInfo, (ArrayView<byte>)inputref, keyStart, width);
+                            kernel(keyRange, (ArrayView<byte>)outputInfo, (ArrayView<byte>)inputref, keyStart, width);
 
-                        this.outputInfo = outputInfo.GetAsArray1D();
+                            this.outputInfo = outputInfo.GetAsArray1D();
 
-                        accelerator.Dispose();
-                        break;
+                            accelerator.Dispose();
+                            break;
+                        }
                     }
                 }
                 context.Dispose();
             }
             catch (Exception)
             {
-
                 throw;
             }
             finally
