@@ -12,5 +12,6 @@ namespace CrekyServer
         public long Id;
         public bool foundMatch;
         public string[]? results;
+        public long[]? resultKeys;
     }
 }

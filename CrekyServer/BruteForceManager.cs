@@ -8,12 +8,13 @@ namespace CrekyServer
 {
     internal class BruteForceManager
     {
-        public static byte[] input = new byte[] { 192, 253, 254, 121, 108, 155, 118, 170, 155, 152, 106, 191, 207, 145, 206, 162, 65, 231, 185, 62, 171, 54, 146, 147, 249, 45, 24, 91, 114, 114, 175, 5, 17, 202, 184, 36, 86, 78, 210, 131, 71, 28, 71, 74, 8, 147, 221, 148, 39, 117, 92, 147, 180, 203, 178, 147, 22, 84, 137, 109, 136, 209, 111, 137 }; // test msg
+        public static byte[] input = new byte[] { 143, 175, 181, 116, 217, 0, 174, 94, 226, 184, 167, 49, 30, 41, 203, 116, 82, 113, 237, 56 ,254, 212, 62, 90, 64 ,104, 255, 100, 77 ,170 ,125 ,165 ,85 ,248, 158, 169, 178, 179, 187 ,95 ,210, 37, 77, 113 ,22 ,62 ,156 ,142 ,106 ,204 ,62 ,95 ,238, 205, 184, 30 ,144 ,35 ,60 ,27 ,145, 174, 168, 227 }; // test msg
         public const long keyRangeStart = 1007199254740992;
         public const long keyRangeEnd = 9007199254740992;
         public const int workPacketSize = 10;
         public const int keyRange = int.MaxValue - 1000;
         public static string saveFile = "bruteforce";
+        public static string matchFile = "results";
         public bool[] reserved;
         public bool[] status;
 
@@ -43,8 +44,6 @@ namespace CrekyServer
 
         public void ApplySaveFile()
         {
-            status = new bool[(keyRangeEnd - keyRangeStart) / ((long)keyRange * workPacketSize)];
-            reserved = new bool[(keyRangeEnd - keyRangeStart) / ((long)keyRange * workPacketSize)];
             byte[] outputBytes = new byte[status.Length];
             for (int i = 0; i < outputBytes.Length; i++)
             {
@@ -83,11 +82,23 @@ namespace CrekyServer
             if (packet.foundMatch)
             {
                 Console.WriteLine("Found match");
+                
                 for (int i = 0; i < packet.results.Length; i++)
                 {
-                    Console.WriteLine(packet.results[i]);
+                    Console.WriteLine(packet.results[i] + " key: " + packet.resultKeys[i]);
+
+                    File.AppendAllLines(matchFile, new string[] { packet.results[i] + " key: " + packet.resultKeys[i] });
                 }
             }
+            long cnt = 0;
+            for (int i = 0; i < status.Length; i++)
+            {
+                if (status[i])
+                {
+                    cnt++;
+                }
+            }
+            Console.WriteLine($"Progress: {((decimal)cnt / ((decimal)keyRangeEnd - (decimal)keyRangeStart)) * 100}%");
         }
 
         public TaskPacket? GetWorkPacket()

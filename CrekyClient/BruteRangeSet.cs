@@ -22,11 +22,13 @@ namespace CrekyClient
         int deviceCount;
         bool found = false;
         List<string> results;
+        List<long> resultKeys;
         Action<RequestPacket> request;
 
         public BruteRangeSet(TaskPacket newTask, Action<RequestPacket> result)
         {
             results = new List<string>();
+            resultKeys = new List<long>();
             request = result;
             task = newTask;
         }
@@ -69,7 +71,6 @@ namespace CrekyClient
         {
             using var accelerator = ((Device)device).CreateAccelerator(context);
             Console.WriteLine($"Execution on device {device}");
-            Console.WriteLine($"Input length: {task.input.Length}");
 
             var kernel = accelerator.LoadAutoGroupedStreamKernel<Index1D, ArrayView<byte>, ArrayView<byte>, ArrayView<short>, long>(TryKeyKernel);
 
@@ -87,7 +88,7 @@ namespace CrekyClient
                     currentChunkSize = lastChunkSize != 0 ? lastChunkSize : chunkSize;
                 }
 
-                long chunkStart = task.keyStart + chunkSize * chunkIndex;
+                long chunkStart = task.keyStart + (long)chunkSize * chunkIndex;
 
                 var outputInfo = accelerator.Allocate1D<byte>(currentChunkSize);
                 var foundIdentifier = accelerator.Allocate1D<short>(1);
@@ -95,7 +96,7 @@ namespace CrekyClient
                 outputInfo.MemSetToZero();
                 foundIdentifier.MemSetToZero();
 
-                Console.WriteLine($"[Chunk{chunkIndex}] Trying {currentChunkSize} keys from index {chunkStart}");
+                Console.WriteLine($"[{((Device)device).Name}] [Chunk{chunkIndex}] Trying {currentChunkSize} keys from index {chunkStart}");
 
                 double startTime = Environment.TickCount;
 
@@ -103,7 +104,7 @@ namespace CrekyClient
 
                 if (foundIdentifier.GetAsArray1D()[0] == 1)
                 {
-                    Console.WriteLine("Found match");
+                    Console.WriteLine($"[{((Device)device).Name}] Found match");
                     found = true;
                     var info = outputInfo.GetAsArray1D();
                     for (int j = 0; j < info.Length; j++)
@@ -117,15 +118,16 @@ namespace CrekyClient
                             {
                                 text += msg[k];
                             }
-                            Console.WriteLine("Match string: " + text);
+                            Console.WriteLine($"[{((Device)device).Name}] Match string: " + text);
                             results.Add(text);
+                            resultKeys.Add(key);
                         }
                     }
                 }
 
                 double duration = Environment.TickCount - startTime;
                 double seconds = duration / 1000d;
-                Console.WriteLine($"Chunk{chunkIndex} finished in {seconds}s");
+                Console.WriteLine($"[{((Device)device).Name}] [Chunk{chunkIndex}] finished in {seconds}s");
 
                 outputInfo.Dispose();
                 foundIdentifier.Dispose();
@@ -139,6 +141,7 @@ namespace CrekyClient
                 if (found)
                 {
                     packet.results = results.ToArray();
+                    packet.resultKeys = resultKeys.ToArray();
                 }
                 request(packet);
             }
