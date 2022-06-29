@@ -5,7 +5,16 @@ VisualStudioVersion = 17.2.32505.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "creky.server", "creky.server\creky.server.csproj", "{0EC70EEE-CD67-4ED7-9D05-F5C04C3DCF3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "crekyCMD", "crekyCMD\crekyCMD.csproj", "{3D58236A-6E38-42AB-A604-7E4A2BDA3195}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "crekyCMD", "crekyCMD\crekyCMD.csproj", "{3D58236A-6E38-42AB-A604-7E4A2BDA3195}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrekyServer", "CrekyServer\CrekyServer.csproj", "{0911964F-36BA-40F4-B24A-A6172CDA3B5E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B146DBAE-F814-4698-BEF1-ECF04B24546D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrekyClient", "CrekyClient\CrekyClient.csproj", "{FFE2B52A-A0F9-45C8-98CF-1316CACCE770}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +30,14 @@ Global
 		{3D58236A-6E38-42AB-A604-7E4A2BDA3195}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D58236A-6E38-42AB-A604-7E4A2BDA3195}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D58236A-6E38-42AB-A604-7E4A2BDA3195}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0911964F-36BA-40F4-B24A-A6172CDA3B5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0911964F-36BA-40F4-B24A-A6172CDA3B5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0911964F-36BA-40F4-B24A-A6172CDA3B5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0911964F-36BA-40F4-B24A-A6172CDA3B5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFE2B52A-A0F9-45C8-98CF-1316CACCE770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFE2B52A-A0F9-45C8-98CF-1316CACCE770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFE2B52A-A0F9-45C8-98CF-1316CACCE770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFE2B52A-A0F9-45C8-98CF-1316CACCE770}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

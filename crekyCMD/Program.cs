@@ -72,10 +72,12 @@ namespace creky.server
 
                     var inputref = accelerator.Allocate1D<byte>(input.Length);
                     var outputInfo = accelerator.Allocate1D<byte>(chunkSize);
+                    var foundIdentifier = accelerator.Allocate1D<short>(1);
                     inputref.CopyFromCPU(input);
                     outputInfo.MemSetToZero();
+                    foundIdentifier.MemSetToZero();
 
-                    var kernel = accelerator.LoadAutoGroupedStreamKernel<Index1D, ArrayView<byte>, ArrayView<byte>, long>(TryKeyKernel);
+                    var kernel = accelerator.LoadAutoGroupedStreamKernel<Index1D, ArrayView<byte>, ArrayView<byte>, ArrayView<short>, long>(TryKeyKernel);
 
                     long chunkStart = startIndex;
 
@@ -83,9 +85,9 @@ namespace creky.server
 
                     double startTime = Environment.TickCount;
 
-                    kernel(currentChunkSize, (ArrayView<byte>)outputInfo, (ArrayView<byte>)inputref, chunkStart);
+                    kernel(currentChunkSize, (ArrayView<byte>)outputInfo, (ArrayView<byte>)inputref, (ArrayView<short>)foundIdentifier, chunkStart);
 
-                    outputInfo.GetAsArray1D();
+                    foundIdentifier.GetAsArray1D();
 
                     double duration = Environment.TickCount - startTime;
                     Console.WriteLine($"Start time: {startTime} - End time: {Environment.TickCount}");
@@ -103,7 +105,7 @@ namespace creky.server
 
             }
         }
-        static void TryKeyKernel(Index1D index, ArrayView<byte> found, ArrayView<byte> input, long start)
+        static void TryKeyKernel(Index1D index, ArrayView<byte> found, ArrayView<byte> input, ArrayView<short> foundIdentifier, long start)
         {
             long keyN = index + start;
             uint a = (uint)(keyN / 0x100000000);
@@ -170,6 +172,7 @@ namespace creky.server
             if (val > resId)
             {
                 found[index] = 1;
+                foundIdentifier[0] = 1;
             }
         }
     }
