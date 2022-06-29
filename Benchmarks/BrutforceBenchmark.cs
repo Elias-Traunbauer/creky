@@ -35,14 +35,8 @@ public class BrutforceBenchmark
                     {
                         msg += r[j];
                     }
-
-                    Console.WriteLine(msg);
                 }
             }
-        }
-        else
-        {
-            //MessageBox.Show("None found");
         }
     }
 
@@ -75,5 +69,11 @@ public class BrutforceBenchmark
                 }
             }
         }
+    }
+
+    [Benchmark]
+    public void Brutforce3()
+    {
+        Speck2.Brutforce("118 239 150 142 172 247 165 16", 1000);
     }
 }

@@ -27,7 +27,7 @@ namespace creky.server
             {
                 foreach (Device device in context.Devices)
                 {
-                    if (device.Name != "gfx902")        // || pls insert trauni gpu
+                    if (device.Name == "NVIDIA GeForce GTX 1660 Ti" || device.Name == "TrauniGPU")        // pls insert trauni gpu
                     {
                         if (device.AcceleratorType == AcceleratorType.Cuda | device.AcceleratorType == AcceleratorType.OpenCL)
                         {
@@ -53,7 +53,6 @@ namespace creky.server
             }
             catch (Exception)
             {
-
                 throw;
             }
             finally
