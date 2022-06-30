@@ -92,5 +92,10 @@ namespace creky.server
             tbBytesIn.Text = "143 175 181 116 217 0 174 94 226 184 167 49 30 41 203 116 82 113 237 56 254 212 62 90 64 104 255 100 77 170 125 165 85 248 158 169 178 179 187 95 210 37 77 113 22 62 156 142 106 204 62 95 238 205 184 30 144 35 60 27 145 174 168 227";
             amount.Text = "200000000";
         }
+
+        private void tbBytesIn_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
