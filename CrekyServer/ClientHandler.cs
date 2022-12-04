@@ -30,6 +30,7 @@ namespace CrekyServer
                     var taskPacket = BruteForceManager.Instance.GetWorkPacket();
                     if (taskPacket != null)
                     {
+                        Console.WriteLine("Sending work-packet to client");
                         objectStream.Serialize(stream, taskPacket);
                     }
                     else
@@ -39,7 +40,6 @@ namespace CrekyServer
                     }
 
                     RequestPacket packet = (RequestPacket)objectStream.Deserialize(stream);
-
                     BruteForceManager.Instance.FinishedPacket(packet);
                 }
                 catch (Exception ex)

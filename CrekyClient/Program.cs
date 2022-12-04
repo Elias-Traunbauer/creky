@@ -15,7 +15,7 @@ namespace CrekyClient
         static void Main(string[] args)
         {
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect("netdb.at", 63636);
+            socket.Connect("127.0.0.1", 63636);
 
             NetworkStream stream = new NetworkStream(socket);
             BinaryFormatter objectStream = new BinaryFormatter();
