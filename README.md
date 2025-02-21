@@ -40,6 +40,5 @@ The project is open-source, with details available in the `LICENSE` file.
 
 ## Contact
 
-Elias Traunbauer - [Your Contact Information]
-
+Elias Traunbauer
 Project Link: [https://github.com/Elias-Traunbauer/creky](https://github.com/Elias-Traunbauer/creky)
